@@ -15,13 +15,6 @@
 // the building of metadata and messsages to the converters
 /* eslint-disable no-continue, max-depth */
 
-// TODO: how to "initialize" a new stream
-//
-// cases
-//  - no mapping, we create converts for all supported messages
-//    - do not support non-primitive fields of messages
-//    - could be an option later
-//  - mapping, only those listed
 import {XVIZBuilder} from '@xviz/builder';
 
 export class ROS2XVIZ {
@@ -129,12 +122,10 @@ export class ROS2XVIZ {
 
     const instances = [];
     const mapped = new Array(this.mapping.length).fill(false);
-    // const hrstart = process.hrtime();
+
     for (const entry of topicMessageTypes) {
       this._makeConvertersForTopic(instances, entry, mapped, aux);
     }
-    // const hrend = process.hrtime(hrstart);
-    // this.log(`Make Converters time (hr): ${hrend[0]}s ${hrend[1] / 1e6}ms`);
 
     this.instances = instances;
   }
@@ -147,19 +138,15 @@ export class ROS2XVIZ {
       await instance.getMetadata(metadataBuilder, aux);
     }
 
-    // TODO: This could be overwritten/augmented by caller, so not really perfect
     this.metadata = metadataBuilder.getMetadata();
   }
 
   async buildMessage(frame) {
     const xvizBuilder = new XVIZBuilder(this.metadata, this.disableStreams, {});
 
-    // const hrstart = process.hrtime();
     for (const instance of this.instances) {
       await instance.convertMessage(frame, xvizBuilder);
     }
-    // const hrend = process.hrtime(hrstart);
-    // this.log(`Building message time (hr): ${hrend[0]}s ${hrend[1] / 1e6}ms`);
 
     try {
       const frm = xvizBuilder.getMessage();

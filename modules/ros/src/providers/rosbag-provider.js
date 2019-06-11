@@ -52,13 +52,6 @@ class MessageIterator {
   }
 }
 
-// People will need to create their own ROSBAGDataProvider
-// and use their subclassed 'XVIZROSBag' instance
-// ... could take the type as a parameter
-//
-// keyTopic is required
-// stream metadtata and vehicle relative
-//
 export class ROSBAGProvider {
   constructor({root, options}) {
     this.bagPath = root.endsWith('.bag') ? root : `${root}.bag`;
@@ -94,7 +87,6 @@ export class ROSBAGProvider {
       this.bag = new this.BagClass(this.bagPath, this.topicConfig, this.options);
 
       if (this.bag) {
-        // TODO: need to separate out init from metadata gathering
         this.metadata = await this.bag.init(this.ros2xviz);
       }
     } catch (err) {
@@ -125,7 +117,7 @@ export class ROSBAGProvider {
       if (endTime >= start && endTime <= end) {
         end = endTime;
       } else {
-        // todo: allow default duration to be an option
+        // TODO: allow default duration to be an option
         end = start + 30;
       }
     }
@@ -143,7 +135,6 @@ export class ROSBAGProvider {
       return null;
     }
 
-    // Read Message by keyTopic/stream
     const dataset = await this.bag.readMessageByTime(start, end);
     const msg = await this.ros2xviz.buildMessage(dataset);
 

@@ -64,10 +64,6 @@ export class ROSXVIZConverter {
 
     const root = bagPath;
     const source = new FileSource(root);
-    // TODO: dump args
-    console.log(root);
-    console.log(JSON.stringify(args, null, 2));
-    console.log(JSON.stringify(providerFactory, null, 2)); // eslint-disable-line
 
     const provider = await providerFactory.open({
       options: {...args},
